@@ -1,5 +1,3 @@
-# 第二篇：学习增强 SLAM 与神经地图
-
 # 第9章 神经隐式 SLAM：iMAP、NICE-SLAM 与 NeRF-SLAM
 
 ## 9.1 神经隐式地图的基本思想
@@ -221,8 +219,3 @@ NeRF 表达优雅——连续、可微、紧凑——但它的核心操作（光
 ## 本章一句话总结
 
 iMAP 证明 MLP 可以做实时 SLAM 地图，NICE-SLAM 证明局部多层级编码可以扩展它，但 NeRF 的体渲染从根本上限制了速度；3D Gaussian Splatting 正在取代这条路线。
-
----
-
-
----

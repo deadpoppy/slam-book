@@ -1,5 +1,3 @@
-# 第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
-
 # 第11章 早期 3DGS-SLAM：SplaTAM、MonoGS 与 Gaussian SLAM
 
 第10章论证了 3D Gaussian Splatting（3DGS）作为场景表示的结构性优势：显式参数化支持随机访问、可微光栅化带来实时渲染、α-混合天生适合密度建模。这些特性为 SLAM 提供了全新的技术选项。2023 年底到 2024 年初，三个几乎同时出现的系统——SplaTAM、MonoGS 和 FlashSLAM——以不同的切入点验证了"地图能渲染"这一思想在 SLAM 中的工程可行性。它们共同定义了 3DGS-SLAM 的第一代范式。
@@ -338,5 +336,3 @@ $$
 ---
 
 **本章一句话总结：** SplaTAM、MonoGS 和 FlashSLAM 共同证明 3D Gaussian Splatting 可以作为 SLAM 的统一场景表示，但它们的速度瓶颈和缺失的回环检测也明确指出了下一代系统需要攻克的工程方向。
-
----
