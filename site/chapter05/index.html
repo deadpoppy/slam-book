@@ -1,0 +1,1909 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="一本关于 SLAM、3D Gaussian Splatting 与具身智能地图的系统性书籍">
+      
+      
+        <meta name="author" content="作者">
+      
+      
+      
+        <link rel="prev" href="../chapter04/">
+      
+      
+        <link rel="next" href="../chapter06/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>第5章 LiDAR SLAM：从 LOAM 到语义激光建图 - 从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#slam" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" class="md-header__button md-logo" aria-label="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第5章 LiDAR SLAM：从 LOAM 到语义激光建图
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../chapter00/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  第0章 从 SLAM 到 Spatial AI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../chapter01/" class="md-tabs__link">
+          
+  
+  
+  第一篇：传统 SLAM 的最小必要知识
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter07/" class="md-tabs__link">
+          
+  
+  
+  第二篇：学习增强 SLAM 与神经地图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter10/" class="md-tabs__link">
+          
+  
+  
+  第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter15/" class="md-tabs__link">
+          
+  
+  
+  第四篇：视觉几何基础模型与 SLAM 的重构
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter19/" class="md-tabs__link">
+          
+  
+  
+  第五篇：开放词汇语义地图与具身智能
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter24/" class="md-tabs__link">
+          
+  
+  
+  第六篇：2026 之后的方向、系统落地与写作框架
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" class="md-nav__button md-logo" aria-label="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter00/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第0章 从 SLAM 到 Spatial AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇：传统 SLAM 的最小必要知识
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇：传统 SLAM 的最小必要知识
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第1章 SLAM 问题的本质：估计、约束与地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第2章 概率滤波到图优化：传统 SLAM 的数学骨架
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第3章 视觉 SLAM：特征法、直接法与稠密法
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第4章 视觉惯性 SLAM 与多传感器融合
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第5章 LiDAR SLAM：从 LOAM 到语义激光建图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第6章 Metric-Semantic SLAM：从几何地图到语义地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇：学习增强 SLAM 与神经地图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇：学习增强 SLAM 与神经地图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第7章 深度学习进入 SLAM：不是替代，而是补强
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第8章 DROID-SLAM：深度 SLAM 的重要分水岭
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第9章 神经隐式 SLAM：iMAP、NICE-SLAM 与 NeRF-SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第10章 3D Gaussian Splatting 为什么改变 SLAM？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第11章 早期 3DGS-SLAM：SplaTAM、MonoGS 与 Gaussian SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 2025 年 3DGS-SLAM 的工程化：快、稳、省、准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第13章 语义3DGS-SLAM：从"可看"到"可理解"
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第14章 2026 年 3DGS-SLAM 前沿：在线、开放词汇、概率与具身接口
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第四篇：视觉几何基础模型与 SLAM 的重构
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第四篇：视觉几何基础模型与 SLAM 的重构
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第15章 从手工几何到视觉几何基础模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第16章 DUSt3R、MASt3R 与 MASt3R-SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第17章 VGGT：前馈式几何基础模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第18章 FoundationSLAM、AIM-SLAM 与 CALM：基础模型 SLAM 的系统化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第五篇：开放词汇语义地图与具身智能
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第五篇：开放词汇语义地图与具身智能
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第19章 语义地图在具身智能中的角色
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第21章 从语义地图到空间记忆：3D-Mem、GSMem 与长期具身智能
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第22章 具身导航中的 SLAM：VLFM、MapNav、WMNav 与 NavFoM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第23章 从 VLM 到 VLA：NaVILA 与具身机器人闭环
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第六篇：2026 之后的方向、系统落地与写作框架
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第六篇：2026 之后的方向、系统落地与写作框架
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第24章 2026 前沿总览：SLAM 正在变成什么？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="slam">第一篇：传统 SLAM 的最小必要知识<a class="headerlink" href="#slam" title="Permanent link">&para;</a></h1>
+<h1 id="5-lidar-slam-loam">第5章 LiDAR SLAM：从 LOAM 到语义激光建图<a class="headerlink" href="#5-lidar-slam-loam" title="Permanent link">&para;</a></h1>
+<p>第4章讲视觉惯性SLAM，核心传感器是相机和IMU。本章换一个传感器主角——激光雷达（LiDAR）。LiDAR SLAM 不是本书后续技术演进的主轴，但它是自动驾驶和室外机器人不可绕过的基础。理解 LiDAR SLAM 的优势、天花板和在具身智能中的真实位置，对全书的地图观至关重要。</p>
+<p>本章聚焦三个问题：LiDAR 相比相机最根本的优势在哪里？LOAM 的双线程架构为什么成为 LiDAR SLAM 的范式起点？LiDAR-Inertial 融合如何将精度推向厘米级？最后我们会明确 LiDAR SLAM 在具身智能中的角色——它不是主角，但它是高精度几何骨架的不可替代的提供者。</p>
+<hr />
+<h2 id="51-lidar-slam">5.1 LiDAR SLAM 的优势<a class="headerlink" href="#51-lidar-slam" title="Permanent link">&para;</a></h2>
+<p>LiDAR 直接测量三维空间中的点坐标。每个返回点携带的信息很单纯：该方向上的距离值。这种直接性带来了四个视觉传感器无法比拟的优势。</p>
+<p><strong>尺度天然准确。</strong> 单目视觉SLAM的尺度是观测不到的，必须从运动视差中推断，因此尺度漂移是结构性问题。LiDAR 返回的距离值以米为单位，每一帧点云的尺度都是确定的。系统不需要像单目视觉那样小心翼翼地维护尺度一致性，也不用担心尺度因子随时间漂移。</p>
+<p><strong>几何结构强。</strong> 图像像素携带颜色信息，但深度需要三角化或多视图几何间接求解。LiDAR 点云本身就是三维几何采样。墙面、地面、障碍物边缘在点云中直接以空间结构的形式呈现，不需要经过特征匹配、对极几何或深度估计的层层近似。这使得 LiDAR SLAM 在几何结构丰富的环境（城市街道、室内走廊、隧道）中极其稳定。</p>
+<p><strong>不依赖光照。</strong> LiDAR 是主动传感器，自带激光发射器。白天黑夜、逆光阴影、光照突变——这些让视觉SLAM头痛的场景对 LiDAR 几乎没有影响。自动驾驶车辆必须在夜间可靠运行，这是 LiDAR 成为标配的核心原因之一。</p>
+<p><strong>测距精度高。</strong> 机械式 LiDAR（如 Velodyne HDL-64E）的测距精度可达厘米级，固态 LiDAR（如 Livox Mid-360）在百米量程上仍保持分米级精度。相比之下，RGB-D 相机的有效深度范围通常不超过10米，室外强光下深度传感器直接失效。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">特性</th>
+<th style="text-align: center;">单目相机</th>
+<th style="text-align: center;">双目相机</th>
+<th style="text-align: center;">RGB-D</th>
+<th style="text-align: center;">LiDAR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">尺度确定性</td>
+<td style="text-align: center;">不可观，需初始化</td>
+<td style="text-align: center;">可观但基线受限</td>
+<td style="text-align: center;">精确</td>
+<td style="text-align: center;">精确</td>
+</tr>
+<tr>
+<td style="text-align: center;">有效深度范围</td>
+<td style="text-align: center;">数米至百米（三角化）</td>
+<td style="text-align: center;">数米至数十米</td>
+<td style="text-align: center;">0.5–10m</td>
+<td style="text-align: center;">50–200m+</td>
+</tr>
+<tr>
+<td style="text-align: center;">光照鲁棒性</td>
+<td style="text-align: center;">差</td>
+<td style="text-align: center;">差</td>
+<td style="text-align: center;">极差（室外）</td>
+<td style="text-align: center;">优</td>
+</tr>
+<tr>
+<td style="text-align: center;">几何直接性</td>
+<td style="text-align: center;">间接（像素→深度）</td>
+<td style="text-align: center;">间接（视差→深度）</td>
+<td style="text-align: center;">直接</td>
+<td style="text-align: center;">直接</td>
+</tr>
+<tr>
+<td style="text-align: center;">适用场景</td>
+<td style="text-align: center;">室内/室外通用</td>
+<td style="text-align: center;">室外受限</td>
+<td style="text-align: center;">室内为主</td>
+<td style="text-align: center;">室外/大场景为主</td>
+</tr>
+</tbody>
+</table>
+<p>上表的结论直白：LiDAR 在室外大场景、长距离、全天候条件下没有替代品。室内小场景 RGB-D 或纯视觉 suffice；自动驾驶和室外机器人的主传感器必须是 LiDAR。</p>
+<p>但 LiDAR 也有硬边界。点云稀疏——机械 LiDAR 每帧约10万点，分配到200米范围内，远处物体只有几个返回点。没有颜色信息——点云不含纹理，无法做基于外观的闭环检测或语义分割（除非融合相机）。雨雾天气激光衰减严重，点云质量急剧下降。最后，LiDAR 成本高、体积大、功耗高，虽然固态 LiDAR 在2020年后价格大幅下降，但与摄像头相比仍不在一个量级。</p>
+<hr />
+<h2 id="52-loam">5.2 LOAM 的关键思想<a class="headerlink" href="#52-loam" title="Permanent link">&para;</a></h2>
+<p>LiDAR SLAM 的奠基之作是 LOAM（LiDAR Odometry and Mapping），由 Zhang 和 Singh 于2014年发表在 RSS（Robotics: Science and Systems）上。LOAM 的核心贡献不是提出某种新的配准算法，而是<strong>将 LiDAR SLAM 解耦为两个并行线程：高频低精度的里程计（Odometry）和低频高精度的建图（Mapping）</strong>，在单核 CPU 上实现了实时低漂移建图。</p>
+<h3 id="521">5.2.1 双线程架构的直觉<a class="headerlink" href="#521" title="Permanent link">&para;</a></h3>
+<p>LiDAR 的帧率通常为10Hz。每一帧点云到来时，如果直接与全局地图做配准，计算代价极高：全局地图可能包含数百万点，最近邻搜索的复杂度随地图规模线性增长。但如果只与上一帧做配准，速度快了，漂移却会像滚雪球一样累积——因为没有全局一致性约束。</p>
+<p>LOAM 的洞察是：<strong>用两阶段设计兼顾实时性和低漂移。</strong></p>
+<ul>
+<li><strong>Odometry 线程</strong>：当前帧与上一帧做特征配准，输出10Hz的位姿估计。计算量小，实时性好，但每一帧都叠加前一帧的误差，单独看 drift 严重。</li>
+<li><strong>Mapping 线程</strong>：当前帧与累积的局部地图做配准，输出1Hz的精修位姿。地图由历史关键帧维护，配准对象是数千帧点云的融合结果，全局一致性远优于帧间配准。</li>
+</ul>
+<p>两个线程的结果在后台融合：odometry 提供高频位姿，mapping 提供低频校正。最终系统输出的是介于两者之间的一个平滑轨迹——既保持了高帧率，又抑制了长期漂移。</p>
+<h3 id="522">5.2.2 边缘特征与平面特征<a class="headerlink" href="#522" title="Permanent link">&para;</a></h3>
+<p>LOAM 不在原始点上做配准，而是提取两类几何特征：<strong>边缘特征</strong>（edge features）和<strong>平面特征</strong>（planar features）。</p>
+<p>提取方法基于局部曲率。对每条扫描线上的每个点，计算其邻域点的散布程度。曲率大的点标记为边缘特征（对应墙角、杆状物、轮廓线），曲率小的点标记为平面特征（对应墙面、地面、天花板）。</p>
+<p>这种提取有两个好处。第一，特征数量只有原始点的1%到5%，配准速度提升两个数量级。第二，边缘和平面的几何语义明确——边缘约束位姿的五个自由度（沿边缘方向不可观），平面约束三个自由度（沿法线方向完全约束），配准时能自然处理不同的信息贡献。</p>
+<h3 id="523-odometry">5.2.3 Odometry：帧间特征匹配<a class="headerlink" href="#523-odometry" title="Permanent link">&para;</a></h3>
+<p>Odometry 线程取当前帧的边缘特征和平面特征，与上一帧的特征集合做匹配。边缘特征匹配的目标是找到最近的两点构成的直线，最小化点到直线的距离；平面特征匹配的目标是找到最近的三点构成的平面，最小化点到平面的距离。</p>
+<p>优化变量是当前帧相对于上一帧的六自由度位姿变换 <span class="arithmatex">\(\mathbf{T} \in SE(3)\)</span>。目标函数是所有特征点到对应几何元素（线/面）的距离平方和：</p>
+<div class="arithmatex">\[E_{\text{odom}} = \sum_{\mathbf{p} \in \mathcal{E}} d^2_{\text{line}}(\mathbf{T} \cdot \mathbf{p}, \mathcal{L}) + \sum_{\mathbf{p} \in \mathcal{P}} d^2_{\text{plane}}(\mathbf{T} \cdot \mathbf{p}, \mathcal{F})\]</div>
+<p>其中 <span class="arithmatex">\(\mathcal{E}\)</span> 和 <span class="arithmatex">\(\mathcal{P}\)</span> 分别是边缘和平面特征点集，<span class="arithmatex">\(\mathcal{L}\)</span> 是对应的直线，<span class="arithmatex">\(\mathcal{F}\)</span> 是对应的平面。这个优化用 Levenberg-Marquardt 求解，迭代3–10次收敛，耗时约10–20ms。</p>
+<h3 id="524-mapping">5.2.4 Mapping：帧到地图配准<a class="headerlink" href="#524-mapping" title="Permanent link">&para;</a></h3>
+<p>Mapping 线程维护一个局部地图，由过去数秒内的关键帧特征累积而成。当新一帧到来时，不是与单帧做匹配，而是与这个局部地图做配准。</p>
+<p>地图中的特征密度远高于单帧。边缘在地图中表现为更长的线段，平面表现为更大的面片。配准目标函数与 odometry 类似，但对应关系搜索的范围更大、匹配质量更高。由于 map 线程只需1–2Hz运行，它有更多时间做精细优化。</p>
+<p>两个线程的结果通过一个简单但有效的方式融合：odometry 给出高频位姿增量 <span class="arithmatex">\(\mathbf{T}_{\text{odom}}\)</span>，mapping 给出低频位姿校正 <span class="arithmatex">\(\mathbf{T}_{\text{map}}\)</span>。最终输出位姿是两者的插值——odometry 保证平滑性，mapping 保证全局一致性。</p>
+<h3 id="525-loam">5.2.5 LOAM 论文精读<a class="headerlink" href="#525-loam" title="Permanent link">&para;</a></h3>
+<p><strong>论文试图解决什么痛点？</strong> 2014年之前，LiDAR SLAM 要么精度高但不能实时（离线 ICP 配准全局地图），要么能实时但漂移严重（帧间 ICP 里程计）。LOAM 要解决的核心矛盾是<strong>实时性与低漂移之间的张力</strong>。</p>
+<p><strong>核心假设是什么？</strong> 环境包含足够的几何结构（边缘和平面）以支持特征提取和配准；传感器运动不过于剧烈，使得帧间配准的初始位姿猜测在收敛域内。</p>
+<p><strong>输入输出是什么？</strong> 输入是机械旋转 LiDAR 的点云序列（如 Velodyne HDL-64E，10Hz）；输出是六自由度位姿轨迹和全局一致的三维点云地图。</p>
+<p><strong>地图表示是什么？</strong> 以边缘线特征集合和平面面片集合的形式维护地图，不是原始点云存储，而是按体素栅格组织特征。</p>
+<p><strong>Tracking 怎么做？</strong> 双线程：odometry 线程做帧间特征匹配（10Hz），mapping 线程做帧到地图配准（1–2Hz）。</p>
+<p><strong>Mapping 怎么做？</strong> 累积历史关键帧的特征到局部地图，新帧的特征与地图特征做最近邻匹配，优化位姿使特征点到对应线/面的距离最小。</p>
+<p><strong>优化目标是什么？</strong> 最小化边缘特征点到对应直线的距离 + 平面特征点到对应平面的距离，Levenberg-Marquardt 迭代求解。</p>
+<p><strong>相比前作真正推进了什么？</strong> 首次在单核 CPU 上实现了实时低漂移 LiDAR SLAM。双线程解耦架构成为后续所有 LiDAR SLAM 系统的范式基础。</p>
+<p><strong>没有解决什么？</strong> 没有闭环检测——纯 odometry + mapping 结构，大闭环误差无法消除。没有处理退化场景——长走廊、空旷区域的几何结构不足以约束六自由度位姿。没有语义理解——地图是纯几何的，不包含任何语义信息。运动畸变补偿粗糙——假设一帧扫描期间传感器匀速运动。</p>
+<p><strong>对后续研究的影响是什么？</strong> LOAM 的双线程架构直接催生了 LeGO-LOAM、LIO-SAM、FAST-LIO 等后续系统。"边缘+平面"的特征提取范式至今仍是 LiDAR SLAM 的主流设计。LOAM 的开源代码成为自动驾驶和机器人领域的事实标准基线。</p>
+<hr />
+<h2 id="53-icpndt">5.3 ICP、NDT 与点云配准<a class="headerlink" href="#53-icpndt" title="Permanent link">&para;</a></h2>
+<p>LiDAR SLAM 的核心计算单元是点云配准（Point Cloud Registration）：给定两个点云集合 <span class="arithmatex">\(\mathcal{P}\)</span>（源点云）和 <span class="arithmatex">\(\mathcal{Q}\)</span>（目标点云），寻找刚体变换 <span class="arithmatex">\(\mathbf{T} \in SE(3)\)</span> 使得 <span class="arithmatex">\(\mathcal{P}\)</span> 与 <span class="arithmatex">\(\mathcal{Q}\)</span> 最佳对齐。本节只讲目标函数的直觉，不涉及求解细节。</p>
+<h3 id="531-icp">5.3.1 ICP：迭代最近点<a class="headerlink" href="#531-icp" title="Permanent link">&para;</a></h3>
+<p>ICP（Iterative Closest Point）由 Besl 和 McKay 于1992年提出，是最经典的点云配准算法。其核心思想朴素而有效：给定初始位姿猜测，对源点云中每一点，在目标点云中找到最近邻点，建立对应关系；然后优化位姿使得所有对应点对的距离最小；用新位姿更新对应关系，重复迭代直到收敛。</p>
+<p>ICP 的目标函数有多种形式。<strong>点到点 ICP</strong>（Point-to-Point）最小化对应点之间的欧氏距离：</p>
+<div class="arithmatex">\[E_{\text{point}} = \sum_{(\mathbf{p}, \mathbf{q}) \in \mathcal{C}} \| \mathbf{R}\mathbf{p} + \mathbf{t} - \mathbf{q} \|^2\]</div>
+<p>其中 <span class="arithmatex">\(\mathcal{C}\)</span> 是对应点集合，<span class="arithmatex">\(\mathbf{T} = (\mathbf{R}, \mathbf{t})\)</span> 是旋转和平移。</p>
+<p><strong>点到平面 ICP</strong>（Point-to-Plane）是 LiDAR SLAM 中更常用的变体。它不最小化到对应点的距离，而是最小化到对应点切平面的距离：</p>
+<div class="arithmatex">\[E_{\text{plane}} = \sum_{(\mathbf{p}, \mathbf{q}) \in \mathcal{C}} \left( \mathbf{n}_q^\top \left( \mathbf{R}\mathbf{p} + \mathbf{t} - \mathbf{q} \right) \right)^2\]</div>
+<p>其中 <span class="arithmatex">\(\mathbf{n}_q\)</span> 是 <span class="arithmatex">\(\mathbf{q}\)</span> 处的局部法向量。点到平面 ICP 的优势在于：它允许源点沿着目标表面的切线方向"滑动"，而不是 rigidly 锁到某个对应点上。在 LiDAR SLAM 中，同一面墙的两帧扫描点不可能完全重合（激光从不同角度采样），点到平面 ICP 对这种采样差异更鲁棒。</p>
+<p>ICP 的致命弱点是<strong>对初猜的依赖性</strong>。如果初始位姿偏离真实值太远，最近邻对应会大量错误，优化收敛到错误解。这是所有基于对应关系的方法的结构性限制。</p>
+<h3 id="532-ndt">5.3.2 NDT：正态分布变换<a class="headerlink" href="#532-ndt" title="Permanent link">&para;</a></h3>
+<p>NDT（Normal Distributions Transform）由 Biber 和 Straßer 于2003年提出，走了一条完全不同的路线：不把目标点云当作点的集合，而是把它编码为局部概率分布。</p>
+<p>具体做法：将目标点云所在的三维空间划分为规则体素网格（cells）。对每个包含点的 cell，用该 cell 内所有点拟合一个正态分布 <span class="arithmatex">\(\mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>，其中 <span class="arithmatex">\(\boldsymbol{\mu}\)</span> 是均值（代表该 cell 的表面中心位置），<span class="arithmatex">\(\boldsymbol{\Sigma}\)</span> 是协方差矩阵（代表表面的方向和平整度）。</p>
+<p>配准的目标变成了：<strong>找到位姿 <span class="arithmatex">\(\mathbf{T}\)</span>，使得源点云中的每个点在变换后落在目标分布上的概率最大。</strong></p>
+<div class="arithmatex">\[E_{\text{NDT}} = -\sum_{\mathbf{p} \in \mathcal{P}} \log \phi\left( \mathbf{T} \cdot \mathbf{p} \; ; \; \boldsymbol{\mu}_{c(\mathbf{p})}, \boldsymbol{\Sigma}_{c(\mathbf{p})} \right)\]</div>
+<p>其中 <span class="arithmatex">\(\phi(\cdot)\)</span> 是正态分布概率密度函数，<span class="arithmatex">\(c(\mathbf{p})\)</span> 是点 <span class="arithmatex">\(\mathbf{p}\)</span> 变换后落入的 cell。最大化概率等价于最小化负对数似然。</p>
+<p>NDT 相比 ICP 有两个优势。第一，<strong>没有显式对应关系搜索</strong>——每个点直接落入某个 cell 的正态分布，不需要找最近邻。这对大规模地图尤其重要，因为 kd-tree 最近邻搜索的复杂度随地图规模增长。第二，<strong>对初猜更宽容</strong>——概率分布提供了梯度信息，即使对应关系不完美，分布的平滑性仍能引导优化向正确方向收敛。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">特性</th>
+<th style="text-align: center;">ICP（点到点）</th>
+<th style="text-align: center;">ICP（点到平面）</th>
+<th style="text-align: center;">NDT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">对应方式</td>
+<td style="text-align: center;">最近邻点对点</td>
+<td style="text-align: center;">最近邻点对面</td>
+<td style="text-align: center;">空间 cell 概率分布</td>
+</tr>
+<tr>
+<td style="text-align: center;">目标函数</td>
+<td style="text-align: center;">对应点欧氏距离</td>
+<td style="text-align: center;">点到切平面距离</td>
+<td style="text-align: center;">负对数似然</td>
+</tr>
+<tr>
+<td style="text-align: center;">初猜敏感度</td>
+<td style="text-align: center;">高</td>
+<td style="text-align: center;">中高</td>
+<td style="text-align: center;">中等</td>
+</tr>
+<tr>
+<td style="text-align: center;">地图规模可扩展性</td>
+<td style="text-align: center;">差（kd-tree 搜索慢）</td>
+<td style="text-align: center;">差</td>
+<td style="text-align: center;">优（cell 查找 <span class="arithmatex">\(O(1)\)</span>）</td>
+</tr>
+<tr>
+<td style="text-align: center;">适用场景</td>
+<td style="text-align: center;">精修对齐</td>
+<td style="text-align: center;">LiDAR SLAM 主流</td>
+<td style="text-align: center;">大规模地图、粗糙对齐</td>
+</tr>
+</tbody>
+</table>
+<p>LOAM 的 odometry 线程本质上是<strong>点到线 + 点到平面的特征级 ICP</strong>，而不是在原始点上做全量 ICP。这是它能达到实时性的关键。FAST-LIO2 则采用了<strong>增量式 kd-tree</strong> 来加速最近邻搜索，实现了原始点级的直接配准，精度更高。</p>
+<hr />
+<h2 id="54-lidar-inertial-slam">5.4 LiDAR-Inertial SLAM<a class="headerlink" href="#54-lidar-inertial-slam" title="Permanent link">&para;</a></h2>
+<p>纯 LiDAR SLAM 有一个结构性缺陷：帧率受限。机械式 LiDAR 通常10Hz，固态 LiDAR 最高也不过20–50Hz。高频运动（车辆颠簸、无人机快速机动）在两次扫描之间的位姿变化不可忽略，产生<strong>运动畸变</strong>（motion distortion）。IMU 的频率通常是200–1000Hz，刚好填补这个空白。</p>
+<p>LiDAR-Inertial SLAM 的核心思路是：<strong>IMU 提供高频位姿积分和运动畸变补偿，LiDAR 提供低频几何校正。</strong> 两者融合后，系统兼具高带宽和低漂移。</p>
+<h3 id="541-lio-sam">5.4.1 LIO-SAM<a class="headerlink" href="#541-lio-sam" title="Permanent link">&para;</a></h3>
+<p>LIO-SAM（Shan et al., IROS 2020）在 LOAM 的基础上引入 IMU，并采用因子图优化框架替代 LOAM 的独立双线程结构。</p>
+<p>系统结构：前端提取 LOAM 风格的边缘和平面特征，IMU 预积分提供高频位姿预测和运动去畸变。后端维护一个滑窗因子图，包含三种因子：IMU 预积分因子、LiDAR 里程计因子和闭环因子。因子图用 iSAM2 增量求解。</p>
+<p>LIO-SAM 的关键创新是<strong>把 LiDAR odometry 当作一个因子插入全局因子图</strong>，而不是像 LOAM 那样做两个独立线程的松耦合。IMU 因子约束相邻帧之间的运动学一致性，LiDAR 因子约束点云配准的几何一致性，闭环因子约束全局一致性。所有因子联合优化，消除了 LOAM 中双线程结果不一致的问题。</p>
+<p>LIO-SAM 的另一个实用贡献是引入了<strong>GPS 因子</strong>作为可选项。当 GPS 信号可用时，其绝对位置测量可以作为额外的全局锚点插入因子图，极大抑制长期漂移。</p>
+<h3 id="542-fast-lio-fast-lio2">5.4.2 FAST-LIO 与 FAST-LIO2<a class="headerlink" href="#542-fast-lio-fast-lio2" title="Permanent link">&para;</a></h3>
+<p>FAST-LIO（Xu and Zhang, RA-L 2021）走了一条更激进的技术路线：<strong>迭代卡尔曼滤波 + 直接点云配准</strong>。</p>
+<p>与 LIO-SAM 的因子图优化不同，FAST-LIO 采用<strong>紧密耦合的迭代扩展卡尔曼滤波（Iterated EKF）</strong>作为后端。IMU 积分作为状态预测步骤，LiDAR 点云配准作为观测更新步骤。EKF 的状态向量包含位姿、速度、IMU 零偏和重力方向。</p>
+<p>FAST-LIO 的核心洞察是：<strong>把 LiDAR 点云配准中的每个有效点当作一个独立的观测，塞入 EKF 的更新方程。</strong> 传统 EKF 只处理一次观测更新；FAST-LIU 的"迭代"在于它对同一批点云观测做多次线性化-更新循环，类似于高斯-牛顿迭代，收敛更快、精度更高。</p>
+<p>FAST-LIO2（Xu et al., T-RO 2022）在此基础上做了两个关键升级：</p>
+<p>第一，<strong>直接法配准</strong>。LOAM 和 LIO-SAM 都在提取的边缘/平面特征上做配准，丢弃了绝大部分原始点。FAST-LIO2 直接在原始点上做配准——每个返回点都参与位姿估计。这要求更快的最近邻搜索，于是引入了<strong>增量式 kd-tree（ikd-Tree）</strong>，支持点级的插入、删除和最近邻查询，将地图维护的复杂度从 <span class="arithmatex">\(O(N)\)</span> 降到接近 <span class="arithmatex">\(O(\log N)\)</span>。</p>
+<p>第二，<strong>去除特征提取</strong>。FAST-LIO2 完全跳过 LOAM 风格的特征提取步骤，所有原始点直接参与优化。这简化了系统架构，同时提高了精度——因为不再丢失几何信息。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">系统</th>
+<th style="text-align: center;">融合框架</th>
+<th style="text-align: center;">配准方式</th>
+<th style="text-align: center;">地图表示</th>
+<th style="text-align: center;">特征提取</th>
+<th style="text-align: center;">典型精度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">LOAM</td>
+<td style="text-align: center;">双线程松耦合</td>
+<td style="text-align: center;">特征级点到线/面</td>
+<td style="text-align: center;">特征集合</td>
+<td style="text-align: center;">边缘+平面</td>
+<td style="text-align: center;">0.5–1% 漂移</td>
+</tr>
+<tr>
+<td style="text-align: center;">LIO-SAM</td>
+<td style="text-align: center;">因子图紧耦合</td>
+<td style="text-align: center;">特征级点到线/面</td>
+<td style="text-align: center;">点云+因子图</td>
+<td style="text-align: center;">边缘+平面</td>
+<td style="text-align: center;">0.3–0.5% 漂移</td>
+</tr>
+<tr>
+<td style="text-align: center;">FAST-LIO</td>
+<td style="text-align: center;">迭代EKF紧耦合</td>
+<td style="text-align: center;">特征级直接法</td>
+<td style="text-align: center;">点云</td>
+<td style="text-align: center;">边缘+平面</td>
+<td style="text-align: center;">0.2–0.4% 漂移</td>
+</tr>
+<tr>
+<td style="text-align: center;">FAST-LIO2</td>
+<td style="text-align: center;">迭代EKF紧耦合</td>
+<td style="text-align: center;">原始点直接法</td>
+<td style="text-align: center;">ikd-Tree</td>
+<td style="text-align: center;">无（全点）</td>
+<td style="text-align: center;">0.1–0.2% 漂移</td>
+</tr>
+</tbody>
+</table>
+<p>上表的关键信息：从 LOAM 到 FAST-LIO2，LiDAR SLAM 的精度提升了一个数量级。核心驱动力不是配准算法的革命性变化，而是<strong>融合框架的紧耦合程度不断加深</strong>——从双线程松耦合到因子图联合优化，再到迭代 EKF 的一步预测-更新。FAST-LIO2 通过原始点直接配准 + 增量 kd-tree，把 LiDAR-Inertial SLAM 的精度推向了厘米级。</p>
+<h3 id="543">5.4.3 退化问题<a class="headerlink" href="#543" title="Permanent link">&para;</a></h3>
+<p>LiDAR-Inertial SLAM 有一个共同的软肋：<strong>几何退化</strong>（Degeneracy）。当环境中没有足够的几何结构来约束六自由度位姿时，配准优化会在某些方向上欠约束。</p>
+<p>典型退化场景：长直走廊——墙面平行，沿走廊方向的平移不可观；开阔平地——地面平坦，垂直方向的位移和俯仰/横滚角的约束弱；隧道——圆柱对称结构，沿隧道轴线的旋转和平移约束不足。</p>
+<p>退化不是理论上的边角案例，是工程中的高频问题。解决方案通常有三类：检测退化方向并在优化中降低其权重（DegenLO）；利用 IMU 的可观性补偿 LiDAR 的退化方向（FAST-LIO 的 IMU 先验天然有这个作用）；融合视觉信息提供纹理约束（LVI-SAM 等 LiDAR-Visual-Inertial 系统）。</p>
+<hr />
+<h2 id="55-lidar-slam">5.5 LiDAR SLAM 在具身智能中的位置<a class="headerlink" href="#55-lidar-slam" title="Permanent link">&para;</a></h2>
+<p>LiDAR SLAM 不是具身智能中地图技术的主角，但它有三个不可替代的角色。</p>
+<p><strong>高精度几何骨架。</strong> 视觉方法（无论是传统特征法还是神经辐射场）在几何精度上始终受限于像素分辨率和三角化误差。LiDAR SLAM 提供厘米级的几何真值，是室外场景中所有语义理解、路径规划和物理交互的底层坐标框架。自动驾驶车辆上的语义地图、高精地图（HD Map）的底图，本质上都是 LiDAR SLAM 输出的几何骨架上叠加语义层。</p>
+<p><strong>室外长期地图。</strong> 室内具身智能可以用视觉+神经隐式表示（如 NeRF、3DGS）做稠密场景理解。但室外大场景（城市街区、园区、野外）的几何范围动辄数平方公里，神经表示的存储和计算代价不可接受。LiDAR SLAM 输出的稀疏点云或体素地图，配合 kd-tree 或哈希索引，是唯一能在室外大规模部署的地图形态。</p>
+<p><strong>语义/语言地图的空间基座。</strong> 第19–22章会讨论开放词汇语义地图和具身导航。这些系统的输入通常是视觉-语言模型（VLM）输出的语义标签或自然语言描述。但语义标签需要锚定在三维空间坐标上才有导航价值。LiDAR SLAM 提供这个锚定框架——它的位姿精度和几何一致性确保语义标签不会漂移到错误的位置。VLMaps、ConceptGraphs 等系统都依赖 LiDAR（或 RGB-D）的点云作为语义锚定的空间基座。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">角色</th>
+<th style="text-align: center;">功能</th>
+<th style="text-align: center;">不可替代性</th>
+<th style="text-align: center;">代表系统</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">几何骨架</td>
+<td style="text-align: center;">厘米级坐标框架</td>
+<td style="text-align: center;">视觉方法精度不足</td>
+<td style="text-align: center;">LOAM、FAST-LIO2</td>
+</tr>
+<tr>
+<td style="text-align: center;">室外长期地图</td>
+<td style="text-align: center;">平方公里级地图维护</td>
+<td style="text-align: center;">神经表示存储代价太高</td>
+<td style="text-align: center;">LIO-SAM、LeGO-LOAM</td>
+</tr>
+<tr>
+<td style="text-align: center;">语义空间基座</td>
+<td style="text-align: center;">语义标签的三维锚定</td>
+<td style="text-align: center;">纯视觉语义地图漂移大</td>
+<td style="text-align: center;">VLMaps、ConceptGraphs</td>
+</tr>
+</tbody>
+</table>
+<p>LiDAR SLAM 的天花板也很清晰。它不能提供颜色或纹理信息——语义理解需要视觉。它在室内小场景不经济——一个扫地机器人不可能装 Velodyne。它的地图是纯几何的——没有场景理解能力。这些限制正是后续章节（第6章 Metric-Semantic SLAM、第7章深度学习进入 SLAM）要突破的方向。</p>
+<p>LiDAR SLAM 的价值不在前沿，而在基础。它是室外具身智能的"地基建图器"——不 flashy，但所有上层应用都依赖它的输出作为空间参考系。</p>
+<hr />
+<p><strong>本章一句话总结：</strong> LOAM 的双线程架构定义了 LiDAR SLAM 的范式，LiDAR-Inertial 融合将精度推向厘米级，而 LiDAR SLAM 在具身智能中的终极角色不是主角，是所有上层语义理解和物理交互赖以锚定的高精度几何骨架。</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link", "header.autohide"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

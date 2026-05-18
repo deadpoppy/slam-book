@@ -1,0 +1,110 @@
+site_name: "从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图"
+site_description: "一本关于 SLAM、3D Gaussian Splatting 与具身智能地图的系统性书籍"
+site_author: "作者"
+site_url: ""
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - header.autohide
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      toc_depth: 4
+  - tables
+  - fenced_code
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - "从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图": index.md
+  - "第0章 从 SLAM 到 Spatial AI": chapter00.md
+  - "第一篇：传统 SLAM 的最小必要知识":
+    - "第1章 SLAM 问题的本质：估计、约束与地图": chapter01.md
+    - "第2章 概率滤波到图优化：传统 SLAM 的数学骨架": chapter02.md
+    - "第3章 视觉 SLAM：特征法、直接法与稠密法": chapter03.md
+    - "第4章 视觉惯性 SLAM 与多传感器融合": chapter04.md
+    - "第5章 LiDAR SLAM：从 LOAM 到语义激光建图": chapter05.md
+    - "第6章 Metric-Semantic SLAM：从几何地图到语义地图": chapter06.md
+  - "第二篇：学习增强 SLAM 与神经地图":
+    - "第7章 深度学习进入 SLAM：不是替代，而是补强": chapter07.md
+    - "第8章 DROID-SLAM：深度 SLAM 的重要分水岭": chapter08.md
+    - "第9章 神经隐式 SLAM：iMAP、NICE-SLAM 与 NeRF-SLAM": chapter09.md
+  - "第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场":
+    - "第10章 3D Gaussian Splatting 为什么改变 SLAM？": chapter10.md
+    - "第11章 早期 3DGS-SLAM：SplaTAM、MonoGS 与 Gaussian SLAM": chapter11.md
+    - "第 12 章 2025 年 3DGS-SLAM 的工程化：快、稳、省、准": chapter12.md
+    - "第13章 语义3DGS-SLAM：从\"可看\"到\"可理解\"": chapter13.md
+    - "第14章 2026 年 3DGS-SLAM 前沿：在线、开放词汇、概率与具身接口": chapter14.md
+  - "第四篇：视觉几何基础模型与 SLAM 的重构":
+    - "第15章 从手工几何到视觉几何基础模型": chapter15.md
+    - "第16章 DUSt3R、MASt3R 与 MASt3R-SLAM": chapter16.md
+    - "第17章 VGGT：前馈式几何基础模型": chapter17.md
+    - "第18章 FoundationSLAM、AIM-SLAM 与 CALM：基础模型 SLAM 的系统化": chapter18.md
+  - "第五篇：开放词汇语义地图与具身智能":
+    - "第19章 语义地图在具身智能中的角色": chapter19.md
+    - "第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图": chapter20.md
+    - "第21章 从语义地图到空间记忆：3D-Mem、GSMem 与长期具身智能": chapter21.md
+    - "第22章 具身导航中的 SLAM：VLFM、MapNav、WMNav 与 NavFoM": chapter22.md
+    - "第23章 从 VLM 到 VLA：NaVILA 与具身机器人闭环": chapter23.md
+  - "第六篇：2026 之后的方向、系统落地与写作框架":
+    - "第24章 2026 前沿总览：SLAM 正在变成什么？": chapter24.md
+    - "附录": appendix.md

@@ -1,0 +1,137 @@
+[
+  [
+    "index.md",
+    "从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图",
+    null
+  ],
+  [
+    "chapter00.md",
+    "第0章 从 SLAM 到 Spatial AI",
+    null
+  ],
+  [
+    "chapter01.md",
+    "第1章 SLAM 问题的本质：估计、约束与地图",
+    "第一篇：传统 SLAM 的最小必要知识"
+  ],
+  [
+    "chapter02.md",
+    "第2章 概率滤波到图优化：传统 SLAM 的数学骨架",
+    "第一篇：传统 SLAM 的最小必要知识"
+  ],
+  [
+    "chapter03.md",
+    "第3章 视觉 SLAM：特征法、直接法与稠密法",
+    "第一篇：传统 SLAM 的最小必要知识"
+  ],
+  [
+    "chapter04.md",
+    "第4章 视觉惯性 SLAM 与多传感器融合",
+    "第一篇：传统 SLAM 的最小必要知识"
+  ],
+  [
+    "chapter05.md",
+    "第5章 LiDAR SLAM：从 LOAM 到语义激光建图",
+    "第一篇：传统 SLAM 的最小必要知识"
+  ],
+  [
+    "chapter06.md",
+    "第6章 Metric-Semantic SLAM：从几何地图到语义地图",
+    "第一篇：传统 SLAM 的最小必要知识"
+  ],
+  [
+    "chapter07.md",
+    "第7章 深度学习进入 SLAM：不是替代，而是补强",
+    "第二篇：学习增强 SLAM 与神经地图"
+  ],
+  [
+    "chapter08.md",
+    "第8章 DROID-SLAM：深度 SLAM 的重要分水岭",
+    "第二篇：学习增强 SLAM 与神经地图"
+  ],
+  [
+    "chapter09.md",
+    "第9章 神经隐式 SLAM：iMAP、NICE-SLAM 与 NeRF-SLAM",
+    "第二篇：学习增强 SLAM 与神经地图"
+  ],
+  [
+    "chapter10.md",
+    "第10章 3D Gaussian Splatting 为什么改变 SLAM？",
+    "第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场"
+  ],
+  [
+    "chapter11.md",
+    "第11章 早期 3DGS-SLAM：SplaTAM、MonoGS 与 Gaussian SLAM",
+    "第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场"
+  ],
+  [
+    "chapter12.md",
+    "第 12 章 2025 年 3DGS-SLAM 的工程化：快、稳、省、准",
+    "第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场"
+  ],
+  [
+    "chapter13.md",
+    "第13章 语义3DGS-SLAM：从\"可看\"到\"可理解\"",
+    "第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场"
+  ],
+  [
+    "chapter14.md",
+    "第14章 2026 年 3DGS-SLAM 前沿：在线、开放词汇、概率与具身接口",
+    "第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场"
+  ],
+  [
+    "chapter15.md",
+    "第15章 从手工几何到视觉几何基础模型",
+    "第四篇：视觉几何基础模型与 SLAM 的重构"
+  ],
+  [
+    "chapter16.md",
+    "第16章 DUSt3R、MASt3R 与 MASt3R-SLAM",
+    "第四篇：视觉几何基础模型与 SLAM 的重构"
+  ],
+  [
+    "chapter17.md",
+    "第17章 VGGT：前馈式几何基础模型",
+    "第四篇：视觉几何基础模型与 SLAM 的重构"
+  ],
+  [
+    "chapter18.md",
+    "第18章 FoundationSLAM、AIM-SLAM 与 CALM：基础模型 SLAM 的系统化",
+    "第四篇：视觉几何基础模型与 SLAM 的重构"
+  ],
+  [
+    "chapter19.md",
+    "第19章 语义地图在具身智能中的角色",
+    "第五篇：开放词汇语义地图与具身智能"
+  ],
+  [
+    "chapter20.md",
+    "第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图",
+    "第五篇：开放词汇语义地图与具身智能"
+  ],
+  [
+    "chapter21.md",
+    "第21章 从语义地图到空间记忆：3D-Mem、GSMem 与长期具身智能",
+    "第五篇：开放词汇语义地图与具身智能"
+  ],
+  [
+    "chapter22.md",
+    "第22章 具身导航中的 SLAM：VLFM、MapNav、WMNav 与 NavFoM",
+    "第五篇：开放词汇语义地图与具身智能"
+  ],
+  [
+    "chapter23.md",
+    "第23章 从 VLM 到 VLA：NaVILA 与具身机器人闭环",
+    "第五篇：开放词汇语义地图与具身智能"
+  ],
+  [
+    "chapter24.md",
+    "第24章 2026 前沿总览：SLAM 正在变成什么？",
+    "第六篇：2026 之后的方向、系统落地与写作框架"
+  ],
+  [
+    "appendix.md",
+    "附录",
+    "第六篇：2026 之后的方向、系统落地与写作框架"
+  ]
+]

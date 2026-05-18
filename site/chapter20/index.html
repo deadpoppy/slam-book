@@ -1,0 +1,1865 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="一本关于 SLAM、3D Gaussian Splatting 与具身智能地图的系统性书籍">
+      
+      
+        <meta name="author" content="作者">
+      
+      
+      
+        <link rel="prev" href="../chapter19/">
+      
+      
+        <link rel="next" href="../chapter21/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图 - 从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" class="md-header__button md-logo" aria-label="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../chapter00/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  第0章 从 SLAM 到 Spatial AI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter01/" class="md-tabs__link">
+          
+  
+  
+  第一篇：传统 SLAM 的最小必要知识
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter07/" class="md-tabs__link">
+          
+  
+  
+  第二篇：学习增强 SLAM 与神经地图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter10/" class="md-tabs__link">
+          
+  
+  
+  第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter15/" class="md-tabs__link">
+          
+  
+  
+  第四篇：视觉几何基础模型与 SLAM 的重构
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../chapter19/" class="md-tabs__link">
+          
+  
+  
+  第五篇：开放词汇语义地图与具身智能
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../chapter24/" class="md-tabs__link">
+          
+  
+  
+  第六篇：2026 之后的方向、系统落地与写作框架
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" class="md-nav__button md-logo" aria-label="从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    从 SLAM 到空间智能：传统几何、3DGS 与具身智能地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter00/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第0章 从 SLAM 到 Spatial AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇：传统 SLAM 的最小必要知识
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇：传统 SLAM 的最小必要知识
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第1章 SLAM 问题的本质：估计、约束与地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第2章 概率滤波到图优化：传统 SLAM 的数学骨架
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第3章 视觉 SLAM：特征法、直接法与稠密法
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第4章 视觉惯性 SLAM 与多传感器融合
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第5章 LiDAR SLAM：从 LOAM 到语义激光建图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第6章 Metric-Semantic SLAM：从几何地图到语义地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇：学习增强 SLAM 与神经地图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇：学习增强 SLAM 与神经地图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第7章 深度学习进入 SLAM：不是替代，而是补强
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第8章 DROID-SLAM：深度 SLAM 的重要分水岭
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第9章 神经隐式 SLAM：iMAP、NICE-SLAM 与 NeRF-SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇：3D Gaussian Splatting SLAM：2024–2026 的主战场
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第10章 3D Gaussian Splatting 为什么改变 SLAM？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第11章 早期 3DGS-SLAM：SplaTAM、MonoGS 与 Gaussian SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 2025 年 3DGS-SLAM 的工程化：快、稳、省、准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第13章 语义3DGS-SLAM：从"可看"到"可理解"
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第14章 2026 年 3DGS-SLAM 前沿：在线、开放词汇、概率与具身接口
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第四篇：视觉几何基础模型与 SLAM 的重构
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第四篇：视觉几何基础模型与 SLAM 的重构
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第15章 从手工几何到视觉几何基础模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第16章 DUSt3R、MASt3R 与 MASt3R-SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第17章 VGGT：前馈式几何基础模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第18章 FoundationSLAM、AIM-SLAM 与 CALM：基础模型 SLAM 的系统化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第五篇：开放词汇语义地图与具身智能
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第五篇：开放词汇语义地图与具身智能
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第19章 语义地图在具身智能中的角色
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第21章 从语义地图到空间记忆：3D-Mem、GSMem 与长期具身智能
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第22章 具身导航中的 SLAM：VLFM、MapNav、WMNav 与 NavFoM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第23章 从 VLM 到 VLA：NaVILA 与具身机器人闭环
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第六篇：2026 之后的方向、系统落地与写作框架
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第六篇：2026 之后的方向、系统落地与写作框架
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第24章 2026 前沿总览：SLAM 正在变成什么？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="_1">第五篇：开放词汇语义地图与具身智能<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="20-vlmapsconceptgraphs-3d">第20章 VLMaps、ConceptGraphs 与开放词汇 3D 地图<a class="headerlink" href="#20-vlmapsconceptgraphs-3d" title="Permanent link">&para;</a></h1>
+<p>传统语义地图要求训练时锁定类别表，新类别出现即失效。开放词汇（open-vocabulary）映射要打破这个约束：利用视觉语言模型（VLM）在海量图文数据中学到的共享嵌入空间，让地图理解训练时从未见过的语义描述。本章追踪这条技术线的三个里程碑——VLMaps 把语言查询变成地图的原生能力，ConceptGraphs 把地图从点的集合提升为对象与关系的图，OVO 证明这种地图可以在线构建并与 SLAM 回环闭合协同。最后，我们梳理五个尚未解决的核心难点。</p>
+<hr />
+<h2 id="201-vlmaps">20.1 VLMaps<a class="headerlink" href="#201-vlmaps" title="Permanent link">&para;</a></h2>
+<h3 id="2011">20.1.1 问题定义：让地图听懂自然语言<a class="headerlink" href="#2011" title="Permanent link">&para;</a></h3>
+<p>第19章讨论的语义地图依赖封闭类别表。机器人需要找到"沙发"时，系统必须事先在训练数据中见过"沙发"这个标签。但真实世界的指令是开放的："去沙发和电视之间"、"找到能充电的东西"。VLMaps 要解决的核心问题是：如何让 3D 地图支持自然语言查询，且零样本（zero-shot）泛化到任意语义描述？</p>
+<h3 id="2012">20.1.2 传统方法的局限<a class="headerlink" href="#2012" title="Permanent link">&para;</a></h3>
+<p>LM-Nav 把图像观测存成图节点，用 CLIP 做图文匹配，再用 GPT-3 在图上规划 (arXiv)。它只能导航到图节点中存储过的图像位置，无法处理空间关系引用（如"A 和 B 之间"）。CLIP on Wheels (CoW) 用 GradCAM 从 CLIP 生成显著性图做导航，但 GradCAM 的 image-level 到 pixel 的映射噪声极大，导致分割 mask 充满错误 (arXiv)。这两种方法都缺少一个关键东西：地图本身不是为语言查询设计的，语言只是事后贴上去的补丁。</p>
+<h3 id="2013-vlmaps">20.1.3 VLMaps 的核心洞察<a class="headerlink" href="#2013-vlmaps" title="Permanent link">&para;</a></h3>
+<p>VLMaps 的核心洞察只有一句话：把预训练视觉语言模型的密集像素级特征，在 3D 重建的物理位置上"固化"下来，使每个地图位置都携带语义嵌入 (ICRA 2023)。这样，地图查询就从"在预定义类别表中查找"变成了"在 CLIP 嵌入空间中进行余弦相似度检索"。</p>
+<h3 id="2014">20.1.4 系统结构<a class="headerlink" href="#2014" title="Permanent link">&para;</a></h3>
+<p>VLMaps 的构建流程分为三步：</p>
+<p><strong>特征提取。</strong> 使用 LSeg（language-driven semantic segmentation）作为视觉骨干 (ICLR)。LSeg 的视觉编码器将 RGB 图像的每个像素映射到 CLIP 特征空间，生成密集像素级嵌入图 <span class="arithmatex">\(F_{img} \in \mathbb{R}^{H \times W \times C}\)</span>，其中 <span class="arithmatex">\(C\)</span> 为 CLIP 嵌入维度（512D 或 768D）。</p>
+<p><strong>3D 反投影。</strong> 对每个 RGB-D 帧，深度像素 <span class="arithmatex">\(u=(u,v)\)</span> 反投影为局部点云：</p>
+<div class="arithmatex">\[P_w = T_k K^{-1} d(u) \tilde{u}\]</div>
+<p>其中 <span class="arithmatex">\(K\)</span> 为相机内参，<span class="arithmatex">\(T_k\)</span> 为第 <span class="arithmatex">\(k\)</span> 帧的相机位姿（由 RGB-D SLAM 提供），<span class="arithmatex">\(d(u)\)</span> 为深度值。每个 3D 点继承对应像素的 LSeg 嵌入。</p>
+<p><strong>网格聚合。</strong> 将 3D 点投影到俯视 2D 网格地图，网格分辨率 <span class="arithmatex">\(s\)</span> 通常设为 0.05 m。同一网格内的多个嵌入取平均，最终得到 VLMap <span class="arithmatex">\(M \in \mathbb{R}^{H_{map} \times W_{map} \times C}\)</span>。</p>
+<h3 id="2015">20.1.5 语言查询机制<a class="headerlink" href="#2015" title="Permanent link">&para;</a></h3>
+<p>查询阶段，将自然语言目标（如 "sofa"）通过 CLIP 文本编码器得到嵌入 <span class="arithmatex">\(f_{text}\)</span>，然后与地图中每个网格的嵌入计算余弦相似度：</p>
+<div class="arithmatex">\[S(i,j) = \cos(M[i,j], f_{text})\]</div>
+<p>取 argmax 得到目标位置的热力图。对于空间关系查询（如 "in between the sofa and the TV"），VLMaps 先将两个实体分别定位，然后基于几何关系计算空间区域，例如取两者之间的中点区域。这一能力在与大语言模型（LLM）结合时尤其强大：LLM 将复杂语言指令解析为一系列 API 调用（如 <code>move_to("sofa")</code>、<code>move_in_between("sofa", "TV")</code>），VLMaps 将每个调用翻译为地图上的具体坐标目标 (ICRA 2023)。</p>
+<h3 id="2016">20.1.6 论文精读<a class="headerlink" href="#2016" title="Permanent link">&para;</a></h3>
+<p><strong>论文试图解决什么痛点？</strong> 现有视觉语言模型（VLM）虽能将图像与自然语言匹配，但与环境建图脱节，缺乏几何地图的空间精度。导航任务需要同时具备空间精确性和开放词汇语义理解能力。</p>
+<p><strong>核心假设是什么？</strong> 预训练视觉语言模型（LSeg/CLIP）的嵌入空间具有足够的泛化能力，零样本迁移到机器人建图场景后，仍能保持语义一致性。</p>
+<p><strong>输入输出是什么？</strong> 输入为 RGB-D 视频流和相机位姿（由 RGB-D SLAM 提供）；输出为俯视语义网格地图，每个网格存储 CLIP 兼容的语义嵌入，支持任意自然语言查询。</p>
+<p><strong>地图表示是什么？</strong> 2D 俯视网格地图（top-down grid map），每个网格单元存储平均后的 LSeg 嵌入向量。</p>
+<p><strong>Tracking 怎么做？</strong> 依赖外部 SLAM 系统提供相机位姿，不做自身的状态估计。</p>
+<p><strong>Mapping 怎么做？</strong> 逐帧将 LSeg 像素特征通过深度反投影到 3D，再投影到俯视网格取平均。</p>
+<p><strong>优化目标是什么？</strong> 无显式优化目标函数，建图过程是简单的特征平均累积。</p>
+<p><strong>相比前作真正推进了什么？</strong> 相比 LM-Nav（只能导航到图节点位置）和 CoW（GradCAM 噪声大），VLMaps 首次让地图本身成为语言可查询的表示，支持空间关系定位（"A 和 B 之间"），且能跨机器人形态共享地图、动态生成不同障碍物图。</p>
+<p><strong>没有解决什么？</strong> 对 3D 重建噪声和里程计漂移敏感；在物体密集场景中无法区分相似物体；假设静态环境；仅支持俯视 2D 地图，丢失了 3D 空间信息。</p>
+<p><strong>对后续研究的影响？</strong> 开创了"VLM 特征 + 3D 重建"的范式，后续 OpenScene、ConceptFusion、LERF 等工作沿此方向将 CLIP 特征扩展到 3D NeRF、点云和高斯表示。</p>
+<h3 id="2017">20.1.7 优点与失败模式<a class="headerlink" href="#2017" title="Permanent link">&para;</a></h3>
+<p><strong>优点。</strong> 模块简单，无需训练或微调；零样本语义泛化；与 LLM 结合后可处理复杂空间语言指令（"在椅子右边三米处"）；支持跨机器人形态的地图共享（同一 VLMap 可为地面机器人生成"避开桌椅"的障碍物图，也可为无人机只标记"墙壁"为障碍）。</p>
+<p><strong>失败模式。</strong> LSeg 对训练时未见过的视觉概念会将其映射到相似已知类别的嵌入空间（如将"bench"映射为"chair"或"sofa"），造成视觉-文本错位。3D 反投影对深度噪声敏感，远处物体特征污染邻近网格。俯视投影丢失高度信息，无法区分上下叠放的不同物体。</p>
+<h3 id="2018">20.1.8 与具身智能的关系<a class="headerlink" href="#2018" title="Permanent link">&para;</a></h3>
+<p>VLMaps 是具身智能中"感知-语言-行动"闭环的早期范例。它将 LLM 的符号推理能力锚定到物理空间的精确坐标上，使语言指令不再停留在抽象层面。后续的 AVLMaps (arXiv) 在此基础上增加了音频模态，证明 VLMaps 框架可向多模态扩展，进一步支撑机器人在模糊环境中的目标消歧（如"找到发出哭声的物体"）。</p>
+<hr />
+<h2 id="202-conceptgraphs">20.2 ConceptGraphs<a class="headerlink" href="#202-conceptgraphs" title="Permanent link">&para;</a></h2>
+<h3 id="2021">20.2.1 问题定义：从点到图的跃迁<a class="headerlink" href="#2021" title="Permanent link">&para;</a></h3>
+<p>VLMaps 的表示仍然是密集的：每个网格或每个点都携带一个特征向量。这种表示有两个根本缺陷：一是冗余——一个沙发上的数千个点共享同一个语义；二是无结构——点与点之间的关系（"书在桌上"、"椅子靠着墙"）被淹没在密集的嵌入海中。ConceptGraphs 要回答的问题是：如何把地图从"点的集合"提升为"对象与关系的图"？</p>
+<h3 id="2022">20.2.2 传统方法<a class="headerlink" href="#2022" title="Permanent link">&para;</a></h3>
+<p>3D 场景图（3DSG）早有研究，但传统方法如 Kimera 的语义场景图是封闭词汇的，节点类别在训练时固定 (arXiv)。开放词汇的 3D 表示（如 OpenScene、ConceptFusion）解决了词汇问题，但采用 per-point 特征存储，内存随场景线性增长，且缺乏对象级别结构和关系信息。</p>
+<h3 id="2023-conceptgraphs">20.2.3 ConceptGraphs 的核心洞察<a class="headerlink" href="#2023-conceptgraphs" title="Permanent link">&para;</a></h3>
+<p>对象是比点更自然的语义单元。ConceptGraphs 用 2D 基础模型做无类别分割，将属于同一对象的 2D mask 跨视图关联融合为 3D 对象节点，然后用大视觉语言模型和大语言模型分别为节点生成语义描述、为边推断空间关系 (ICRA 2024)。最终表示是一张紧凑、可查询、可更新的开放词汇 3D 场景图。</p>
+<h3 id="2024">20.2.4 系统结构<a class="headerlink" href="#2024" title="Permanent link">&para;</a></h3>
+<p><strong>对象级 3D 映射。</strong> 给定带位姿的 RGB-D 帧序列 <span class="arithmatex">\(\{I_1, I_2, ..., I_t\}\)</span>，维护 3D 场景图 <span class="arithmatex">\(M_t = \langle O_t, E_t \rangle\)</span>，其中 <span class="arithmatex">\(O_t\)</span> 为对象节点集合，<span class="arithmatex">\(E_t\)</span> 为边集合。每个对象节点 <span class="arithmatex">\(o_j\)</span> 由 3D 点云 <span class="arithmatex">\(p_j\)</span> 和语义特征向量 <span class="arithmatex">\(f_j\)</span> 表征。</p>
+<p>逐帧处理时，先用 SAM（Segment Anything）做无类别 2D 实例分割，得到候选 mask。对每个 mask，提取 CLIP 图像嵌入作为语义描述符，并通过深度反投影得到局部 3D 点云。</p>
+<p><strong>跨视图对象关联。</strong> 新检测到的对象 <span class="arithmatex">\(o_{t,i}\)</span> 与已有对象 <span class="arithmatex">\(o_j\)</span> 的关联得分由几何相似度和语义相似度组成：</p>
+<div class="arithmatex">\[\phi(i,j) = \phi_{sem}(i,j) + \phi_{geo}(i,j)\]</div>
+<p>其中语义相似度 <span class="arithmatex">\(\phi_{sem}(i,j) = (f_{t,i}^T f_j / 2 + 1/2)\)</span> 为归一化余弦距离，几何相似度 <span class="arithmatex">\(\phi_{geo}(i,j)\)</span> 衡量两个点云之间的最近邻覆盖率。采用贪心策略匹配：每个新检测与得分最高的已有对象关联；若最高得分低于阈值 <span class="arithmatex">\(\delta_{sim}=1.1\)</span>，则初始化新对象。</p>
+<p>关联成功后，融合更新对象的语义特征和点云：</p>
+<div class="arithmatex">\[f_j = \frac{n_j f_j + f_{t,i}}{n_j + 1}\]</div>
+<p>其中 <span class="arithmatex">\(n_j\)</span> 为对象被观测到的次数。</p>
+<p><strong>场景图生成。</strong> 对象集合确定后，计算每对对象 3D 边界框的 IoU 得到密集连通矩阵，用最小生成树（MST）剪枝得到候选边。然后利用 LLaVA 为每个对象生成 caption（从 10 个不同视角裁剪送入 LLaVA），再用 GPT-4 推断 MST 中每对相邻对象的空间关系（如 "a on b"、"b in a"），形成场景图的边。</p>
+<h3 id="2025">20.2.5 关键实现<a class="headerlink" href="#2025" title="Permanent link">&para;</a></h3>
+<p>ConceptGraphs 使用 SAM 做分割，CLIP ViT 做特征提取，LLaVA 做节点 caption，GPT-4 做关系推断 (ICRA 2024)。体素下采样和最近邻阈值均为 2.5 cm。论文还提出了 CG-D 变体，用 RAM（图像标注模型）列出类别 + Grounding DINO 做开放词汇检测，适合特定类别的定向检测。</p>
+<h3 id="2026">20.2.6 论文精读<a class="headerlink" href="#2026" title="Permanent link">&para;</a></h3>
+<p><strong>论文试图解决什么痛点？</strong> 现有开放词汇 3D 表示（如 OpenScene、ConceptFusion）采用 per-point 特征，内存不可扩展，缺乏对象结构和关系信息；传统 3D 场景图是封闭词汇的。需要一个既开放词汇又对象级别且紧凑的 3D 表示。</p>
+<p><strong>核心假设是什么？</strong> 2D 基础模型（SAM、CLIP）的零样本能力足以支撑 3D 对象的发现和描述；LLM 拥有足够的空间常识来推断物体间关系；对象级别的表示比 per-point 表示更紧凑、更适合机器人规划。</p>
+<p><strong>输入输出是什么？</strong> 输入为带位姿的 RGB-D 帧序列；输出为开放词汇 3D 场景图（节点 = 3D 对象 + CLIP 特征 + LLaVA caption，边 = LLM 推断的空间关系），支持下游任务：分割、目标定位、导航、操作、定位、地图更新。</p>
+<p><strong>地图表示是什么？</strong> 图结构 <span class="arithmatex">\(M_T = (O_T, E_T)\)</span>。每个节点包含：3D 点云、3D 边界框、CLIP 特征、语言描述。每条边包含关系标签（如 "on"、"in"、"next to"）和推理解释。</p>
+<p><strong>Tracking 怎么做？</strong> 依赖外部 SLAM/SfM 提供相机位姿。对象跨帧跟踪通过投影-匹配实现：将已有 3D 对象投影到当前帧，与 SAM 生成的 2D mask 做几何+语义相似度匹配。</p>
+<p><strong>Mapping 怎么做？</strong> 增量式：每帧做 SAM 分割 → 反投影到 3D → 与已有对象关联（或新建）→ 融合点云和特征 → 场景图生成。</p>
+<p><strong>优化目标是什么？</strong> 无全局优化，采用贪心关联和增量融合。</p>
+<p><strong>相比前作真正推进了什么？</strong> 相比 ConceptFusion（per-point CLIP 特征，内存随场景增长），ConceptGraphs 将表示压缩到对象级别，内存与对象数成正比而非点数；首次将开放词汇 3D 场景图用于机器人规划任务（导航、操作、定位）；LLM 生成的关系边使场景图可直接被 LLM planner 消费。</p>
+<p><strong>没有解决什么？</strong> 对象关联采用贪心策略而非全局最优，密集场景中可能误合并或拆分对象；场景图生成依赖离线 LLM 调用（GPT-4），延迟高无法实时；SAM 分割在纹理缺失区域效果差；关系推断准确率约 88%，仍有错误传播风险；未处理动态环境（对象移动、新增、删除）。</p>
+<p><strong>对后续研究的影响？</strong> 证明了对象级 3D 场景图比 per-point 表示更适合机器人任务；启发了后续将 LLM 与 3D 场景图结合做规划的工作（如 SayPlan、Delta）；为开放词汇场景理解提供了从"感知"到"规划"的完整pipeline。</p>
+<h3 id="2027">20.2.7 优点与失败模式<a class="headerlink" href="#2027" title="Permanent link">&para;</a></h3>
+<p><strong>优点。</strong> 表示紧凑：对象数远少于点数，内存占用低；语义丰富：节点有 LLaVA 生成的自然语言描述，边有空间关系标签，可直接喂给 LLM 做推理；开放词汇：SAM 不预设类别，CLIP 支持任意语义查询；模块化：SAM、CLIP、LLaVA、GPT-4 均可替换为新版本。</p>
+<p><strong>失败模式。</strong> LLaVA 的 caption 质量直接决定节点标签的准确性（实验显示节点精度约 71%，多数错误来自 LLaVA）；LLM 关系推断依赖物体 caption 的准确性，错误 caption 导致错误关系；贪心对象关联在遮挡严重时可能将一个物理对象拆成两个节点，或将两个靠近的不同对象合并。</p>
+<h3 id="2028">20.2.8 与具身智能的关系<a class="headerlink" href="#2028" title="Permanent link">&para;</a></h3>
+<p>ConceptGraphs 是具身智能中"结构化空间记忆"的关键一环。它生成的场景图可直接转化为自然语言描述供 LLM 消费，实现从感知到规划的端到端衔接。在实验中，ConceptGraphs 被部署到轮式和足式机器人上，执行包括"找到能帮我拧螺丝的东西"（affordance 查询）、"把 cuddly quacker 拿起来"（开放词汇操作）、"我能推这个物体穿过去吗？"（可通行性判断）等任务。这些任务都需要超越几何的语义推理——正是场景图结构提供的核心能力。</p>
+<hr />
+<h2 id="203-ovo">20.3 OVO<a class="headerlink" href="#203-ovo" title="Permanent link">&para;</a></h2>
+<h3 id="2031">20.3.1 问题定义：在线，而不是离线<a class="headerlink" href="#2031" title="Permanent link">&para;</a></h3>
+<p>VLMaps 和 ConceptGraphs 都假设输入是完整的 RGB-D 序列，可以离线处理。但机器人需要在探索中实时构建语义地图：每到一个新位置，地图就应该更新。OVO（Open-Vocabulary Online 3D semantic mapping）的核心问题是：开放词汇 3D 语义地图能否在线构建，并与 SLAM 的回环闭合协同工作？</p>
+<h3 id="2032">20.3.2 传统方法的瓶颈<a class="headerlink" href="#2032" title="Permanent link">&para;</a></h3>
+<p>离线方法（OpenScene、OpenMask3D、Open3DIS、HOV-SG）需要先获得完整的场景重建，然后批量处理。在线方法（Kimera、SemanticFusion）虽能实时运行，但只支持封闭词汇。介于两者之间的方法（ConceptFusion、ConceptGraphs、Open-Fusion）号称在线，但不支持回环闭合（loop closure）——当 SLAM 检测到回环并校正累计漂移时，语义地图无法同步修正 (arXiv)。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>开放词汇</th>
+<th>3D 语义</th>
+<th>在线</th>
+<th>回环闭合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenScene</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>-</td>
+</tr>
+<tr>
+<td>OpenMask3D</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Open3DIS</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>-</td>
+</tr>
+<tr>
+<td>HOV-SG</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>-</td>
+</tr>
+<tr>
+<td>OpenNeRF</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>-</td>
+</tr>
+<tr>
+<td>NEDS-SLAM</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>NIS-SLAM</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>SGS-SLAM</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>ConceptFusion</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>ConceptGraphs</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Open-Fusion</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td><strong>OVO</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+</tr>
+</tbody>
+</table>
+<p>这张表清晰展示了开放词汇建图领域的能力缺口。OpenScene 系列解决了开放词汇和 3D 语义，但无法在线运行；NEDS-SLAM 系列可以在线，但封闭词汇且不支持回环；ConceptGraphs 虽接近目标，但回环闭合的缺失使其在长距离探索中会因漂移累积而失效。OVO 首次将四个能力集于一身，填补了领域的关键空白。</p>
+<h3 id="2033-ovo">20.3.3 OVO 的核心洞察<a class="headerlink" href="#2033-ovo" title="Permanent link">&para;</a></h3>
+<p>在线开放词汇建图的关键瓶颈不是语义提取（SAM 和 CLIP 已经足够快），而是跨帧一致性和回环闭合时的语义融合。OVO 的核心洞察是：把 3D segments 当作 tracked entities，用神经网络学习如何最优融合多个视角的 CLIP 描述符，并设计一套机制在回环闭合后自动合并被漂移"拆散"的语义实例 (arXiv)。</p>
+<h3 id="2034">20.3.4 系统结构<a class="headerlink" href="#2034" title="Permanent link">&para;</a></h3>
+<p>OVO 采用经典的 tracking-and-mapping 并行架构，输入为 RGB-D 关键帧流及位姿，输出为带 CLIP 嵌入的 3D 语义 segments。</p>
+<p><strong>3D Segment Mapper。</strong> 每帧用 SAM 2.1 生成 2D masks，反投影为 3D segments。已有 3D segments 被投影到当前帧，与新的 2D masks 做匹配。匹配准则综合几何重叠和语义相似度。匹配成功的 mask 更新对应 3D segment 的点云和观测记录；未匹配的 mask 初始化新 segment。</p>
+<p><strong>CLIP Merging。</strong> 这是 OVO 的核心创新。对每个 2D mask，OVO 计算三个 CLIP 描述符：整图描述符 <span class="arithmatex">\(F_{global}\)</span>、mask 区域描述符 <span class="arithmatex">\(F_{masked}\)</span>、包围框区域描述符 <span class="arithmatex">\(F_{bbox}\)</span>。传统方法用固定权重融合三者（如 HOV-SG 的加权策略），OVO 则用一个小型 Transformer（5 层自注意力，8 头，1152 维隐层）预测每维度的动态权重，输出最终描述符：</p>
+<div class="arithmatex">\[\mathbf{d} = \sum_{k \in \{global, masked, bbox\}} w_k \odot F_k\]</div>
+<p>其中权重 <span class="arithmatex">\(w_k\)</span> 由神经网络根据图像内容预测，实现实例级的自适应融合。该网络在 ScanNet++ 的 230 个训练场景上训练，仅用最常见的 100 个类别，但实验表明它泛化到 1600 个未见类别和新的数据集。</p>
+<p><strong>最优视角选择。</strong> 每个 3D segment 可能在数十帧中被观测到，OVO 选择 mask 面积最大（即视角最佳）的 10 个关键帧，用 CLIP Merging 网络为每个 mask 生成描述符，然后从中选择最具代表性的一个赋予该 3D segment。</p>
+<p><strong>回环闭合处理。</strong> 当 SLAM 模块执行回环闭合或全局 BA 时，OVO 同步更新 3D 点云位姿。然后遍历所有 3D segment 对，若满足三个条件则合并：(1) 质心距离 &lt; 150 cm；(2) CLIP 余弦相似度 &gt; 0.8；(3) 超过 50% 的点在 10 cm 内邻近。合并时统一点索引，将旧标签重新标记。</p>
+<h3 id="2035-slam">20.3.5 与 SLAM 集成<a class="headerlink" href="#2035-slam" title="Permanent link">&para;</a></h3>
+<p>OVO 实现了三种配置：OVO-mapping（使用真值位姿，用于评估建图本身）、OVO-Gaussian-SLAM（集成到 Gaussian-SLAM 中）、OVO-ORB-SLAM2（集成到 ORB-SLAM2 中）(arXiv)。后两种配置证明 OVO 可以与不同的 SLAM 后端协同工作，包括稀疏特征法（ORB-SLAM2）和神经表示法（Gaussian-SLAM）。</p>
+<h3 id="2036">20.3.6 论文精读<a class="headerlink" href="#2036" title="Permanent link">&para;</a></h3>
+<p><strong>论文试图解决什么痛点？</strong> 现有开放词汇 3D 语义方法要么离线处理（需要完整序列），要么在线但不支持回环闭合，要么封闭词汇。机器人需要一种能在实时探索中构建、且当检测到回环时能自动修正的开放词汇语义地图。</p>
+<p><strong>核心假设是什么？</strong> SAM 2.1 的 2D 分割质量足以支撑 3D segment 的提取和跨帧跟踪；CLIP 嵌入空间在神经网络的自适应融合下仍能保持开放词汇泛化能力；回环闭合后的几何校正 + CLIP 相似度准则足以正确合并被漂移拆分的语义实例。</p>
+<p><strong>输入输出是什么？</strong> 输入为 RGB-D 关键帧流及 SLAM 提供的位姿；输出为 3D 语义地图，其中每个 segment 带有 CLIP 嵌入，支持任意开放词汇类别查询。</p>
+<p><strong>地图表示是什么？</strong> 带标签的 3D point cloud，其中每个 point 属于一个 segment，每个 segment 有一个 CLIP 描述符。</p>
+<p><strong>Tracking 怎么做？</strong> 3D segments 投影到当前帧与 SAM 2.1 的 2D masks 匹配，综合几何重叠和语义相似度。SAM 2.1 的 mask 质量直接决定 tracking 的稳定性。</p>
+<p><strong>Mapping 怎么做？</strong> 增量式：每帧 SAM 分割 → 反投影 → 与已有 segments 匹配/新建 → 延迟计算 CLIP（通过队列调度）→ 回环时合并重复 segments。</p>
+<p><strong>优化目标是什么？</strong> CLIP Merging 网络的训练目标是最小化融合后描述符与对应语义类别文本描述符之间的余弦距离（使用 ScanNet++ 的 2D 语义标注作为监督）。</p>
+<p><strong>相比前作真正推进了什么？</strong> OVO 是首个同时实现开放词汇、3D 语义、在线运行、回环闭合四个特性的系统。相比离线方法（OpenScene、OpenMask3D），OVO 的计算和内存开销显著更低；相比在线方法（ConceptFusion、Open-Fusion），OVO 支持回环闭合，这是长距离机器人探索的必要能力。CLIP Merging 网络首次用神经网络取代手工设计的 CLIP 融合启发式规则，在多个数据集上取得更好的分割指标。</p>
+<p><strong>没有解决什么？</strong> 处理速度约 1 FPS，限制了实时应用（需要多 GPU）；CLIP Merging 在训练时只见过 100 个类别，对完全未见的长尾类别存在轻微偏差；SAM 2.1 的分割在深度不连续区域会产生"mask bleeding"（mask 溢出到背景）；未处理动态物体（人走动、门开关等场景会导致 segments 分裂或合并错误）；需要深度传感器（RGB-D），不支持纯 RGB 输入。</p>
+<p><strong>对后续研究的影响？</strong> OVO 证明了开放词汇语义建图可以与经典 SLAM 架构无缝集成。Ov3R (arXiv) 在此基础上进一步去掉深度依赖，用 RGB-only 视频实现开放词汇建图，验证了 CLIP3R 作为 3D 重建骨干的可行性。</p>
+<h3 id="2037">20.3.7 优点与失败模式<a class="headerlink" href="#2037" title="Permanent link">&para;</a></h3>
+<p><strong>优点。</strong> 四项关键能力同时在线：开放词汇 + 3D 语义 + 在线增量 + 回环闭合；CLIP Merging 网络的自适应融合优于固定权重策略；模块化设计可与不同 SLAM 后端集成；计算和内存效率优于所有离线基线。</p>
+<p><strong>失败模式。</strong> SAM 2.1 的 mask 在深度边缘溢出，导致 3D segment 包含背景点，影响 CLIP 描述符质量。1 FPS 的处理速度对高速平台不够。训练数据集中在室内场景（ScanNet++），在室外场景的泛化未经验证。回环闭合后的 segment 合并依赖三个启发式阈值（150cm、0.8、50%），在复杂回环场景中可能误合并。</p>
+<h3 id="2038">20.3.8 与具身智能的关系<a class="headerlink" href="#2038" title="Permanent link">&para;</a></h3>
+<p>OVO 解决了具身智能中一个关键的基础设施问题：机器人如何在探索未知环境的同时，实时构建一个可被自然语言查询的语义地图？这个能力是所有上层任务（导航、操作、人机交互）的前提。OVO 与 SLAM 的集成意味着它可以直接嵌入现有的机器人导航栈中，不需要额外的离线处理管道。</p>
+<hr />
+<h2 id="204-open-vocabulary-mapping">20.4 Open-Vocabulary Mapping 的核心难点<a class="headerlink" href="#204-open-vocabulary-mapping" title="Permanent link">&para;</a></h2>
+<h3 id="2041-2d-3d">20.4.1 2D 语义如何稳定提升到 3D<a class="headerlink" href="#2041-2d-3d" title="Permanent link">&para;</a></h3>
+<p>开放词汇映射的第一步是把 2D 图像中的语义信息提升到 3D。这个过程比看起来脆弱得多。深度传感器在物体边界处产生不准确的深度值，导致反投影后的 3D 点云在边缘处"渗透"到背景中。SAM 的分割 mask 在深度不连续处也容易溢出——一个桌子的 mask 可能包含桌面边缘后面的地板像素。这些噪声点将错误的 CLIP 特征带入 3D segment 的描述符，降低语义查询的准确性。OVO 通过限制 mask 的反投影深度范围来缓解这一问题，但无法根本解决 (arXiv)。更深层的问题是：2D foundation models（SAM、CLIP）是为 2D 图像设计的，它们对 3D 几何结构没有显式理解。一个物体在不同视角下的 2D 外观差异巨大，CLIP 描述符也随之变化——如何从这些变化的描述中提炼出稳定的 3D 语义表示，仍是开放问题。后续工作如 Ov3R 尝试将 3D 几何信息直接融入 CLIP 描述符的提取过程，代表了一个有希望的探索方向。</p>
+<h3 id="2042">20.4.2 多视角语义如何融合<a class="headerlink" href="#2042" title="Permanent link">&para;</a></h3>
+<p>同一物体从多个视角观测会得到多个 CLIP 描述符。如何融合它们？简单取平均是最常用的策略，但存在问题：当某些视角中物体被遮挡或光照条件恶劣时，其 CLIP 描述符质量低，平均操作会"污染"整体描述。VLMaps 在网格级别做平均，ConceptGraphs 在对象级别做增量平均，OVO 用神经网络学习自适应权重。但这三种策略都隐含一个假设：CLIP 嵌入空间是线性的，即好的描述符和坏的描述符可以线性插值。CLIP 的实际嵌入空间高度非线性，线性融合可能不是最优的。更根本的问题是：多视角融合的"最优"标准是什么？现有方法缺乏 3D 语义融合的理论框架，大多依赖经验策略。OVO 的 CLIP Merging 网络虽然用数据驱动的方式学习了融合权重，但其监督信号来自 2D 语义标注的文本描述符——这假设了单一视角的文本描述足以代表整个 3D 实例的语义，在现实中未必成立。</p>
+<h3 id="2043">20.4.3 同一物体如何跨帧关联<a class="headerlink" href="#2043" title="Permanent link">&para;</a></h3>
+<p>跨帧对象关联（data association）是开放词汇建图中最容易出错的环节。ConceptGraphs 用几何重叠率 + CLIP 余弦相似度的贪心匹配，OVO 用投影匹配 + 相似度阈值。这些方法在场景中物体稀疏时工作良好，但在以下场景中失效：(1) 多个同类物体紧密排列（如书架上的多本书），CLIP 特征相似但几何位置不同，可能被错误合并或拆分；(2) 大物体从局部视角看像不同物体（如 L 形沙发的两个臂），可能被拆分为两个 segment；(3) 动态物体跨帧移动，关联系统将其误判为新物体。这些 failure case 的共性是：只依赖局部几何和语义相似度，缺乏全局一致性约束。匈牙利算法可以提供全局最优匹配，但 OVO 实验中报告它只带来"微小提升"且计算更慢——这说明问题不在于匹配算法的优化，而在于相似度度量本身不够可靠。未来的方向可能是引入 LLM 的常识推理来辅助关联决策，或者利用 3D 对象的拓扑结构信息（如"桌子"应该"支撑""杯子"）作为额外的关联约束。</p>
+<h3 id="2044">20.4.4 开放词汇如何避免幻觉<a class="headerlink" href="#2044" title="Permanent link">&para;</a></h3>
+<p>开放词汇是一把双刃剑。系统可以响应任意查询，但也意味着它可能响应"不存在的东西"。当用户查询"红色的灭火器"但场景中没有时，VLMaps 仍会在地图上找到余弦相似度最高的位置——可能是一个红色的柜子或椅子。CLIP 的文本-图像对齐是"相对的"（找到最相似的），而非"绝对的"（判断是否存在）。ConceptGraphs 通过对象 caption 提供额外的验证层（LLaVA 可能 caption 一个柜子为 "a wooden cabinet"，与 "fire extinguisher" 不符），但 LLaVA 自身也有幻觉问题。OVO 的 CLIP Merging 网络在训练时偏向训练集中的类别，对稀有类别可能产生过度自信的预测。这些问题没有统一解决方案：开放词汇系统需要在"泛化能力"和"准确性"之间做持续 trade-off。一种可能的路径是引入不确定性估计——当查询余弦相似度低于某个阈值时，系统应回复"未找到"而不是给出最相似的误匹配。</p>
+<h3 id="2045">20.4.5 地图如何随环境变化更新<a class="headerlink" href="#2045" title="Permanent link">&para;</a></h3>
+<p>真实环境是动态的：人走进走出，家具被移动，灯光变化。现有的开放词汇建图系统几乎全部是静态假设——地图一旦建好就不再更新。ConceptGraphs 的对象级表示理论上更容易处理动态更新（删除一个节点比删除点云中的一组点更简单），但论文未实现动态更新。OVO 支持回环闭合时的 segment 合并，但不处理 segment 的分裂（如一个物体被移走了一半）。长期运行的开放词汇建图系统需要一套完整的地图维护机制：检测变化、决定是更新旧节点还是新建节点、处理新旧信息的冲突。这是从"建图"到"持续空间记忆"的关键跃迁，也是第21章讨论的主题。动态更新的核心挑战在于区分"同一对象的变化"和"新对象的出现"——这个判断需要时序推理和常识知识，远超现有系统的处理能力。</p>
+<hr />
+<h2 id="205">20.5 本章小结<a class="headerlink" href="#205" title="Permanent link">&para;</a></h2>
+<p>开放词汇 3D 地图是语义 SLAM 的下一个前沿。VLMaps 证明了预训练 VLM 特征可以融入 3D 重建，使地图被自然语言索引；ConceptGraphs 证明对象级别的场景图比 per-point 表示更紧凑、更适合机器人规划；OVO 证明这种地图可以在线构建并与 SLAM 回环闭合协同。三者共同勾勒出一个方向：地图不再是仅供定位和路径规划的几何结构，而是机器人理解并与人类交流其空间环境的语义接口。但这个方向仍有五大核心难题待解：2D 到 3D 的语义提升不够稳定、多视角融合缺乏理论框架、跨帧关联在复杂场景中易错、开放词汇存在幻觉风险、动态环境更新机制缺失。这些难题的解决将决定开放词汇地图能否从实验室走向长期部署的机器人系统。</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link", "header.autohide"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
